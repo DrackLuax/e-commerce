@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { UpperCasePipe, CurrencyPipe } from '@angular/common';
 import { PrecoFormatadoPipe } from '../../pipes/preco-formatado-pipe';
 
@@ -10,6 +10,12 @@ import { PrecoFormatadoPipe } from '../../pipes/preco-formatado-pipe';
 })
 // adcionando a classe Produto com as propriedades produto, preço, mostrarProduto, mostrarPreco
 export class Produto {
+  //entrada de dados da lista Produtos em lista-produtos
   @Input() nome: string = '';
   @Input() preco: number = 0;
+  //Saída de dados de lista Produtos selecionados para lista-produtos
+  @Output() produtoSelecionado = new EventEmitter<string>();
+  selecionarProduto(){
+    this.produtoSelecionado.emit(this.nome);
+  }
 }
