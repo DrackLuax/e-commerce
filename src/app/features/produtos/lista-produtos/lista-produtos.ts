@@ -44,7 +44,9 @@ export class ListaProdutos {
       {nome:'desktop', preco: 1500},
       {nome:'headset', preco: 30},
     ])
-  } constructor(){
+  } 
+  //! metodo para monitorar alterações em tempo real usando effect
+  constructor(){
     effect(() => {
       console.log('Lista de Produtos alterados: ', this.produtos());
     });
@@ -57,5 +59,6 @@ export class ListaProdutos {
       }
     });
   }
+  //! Metodo para criar um estado de seleção com signal string | null
   produtoSelecionado = signal <string | null>(null);
 }
