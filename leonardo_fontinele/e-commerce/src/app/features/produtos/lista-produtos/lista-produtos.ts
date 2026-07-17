@@ -27,6 +27,12 @@ export class ListaProdutos {
       {nome:'Playstation 5', preco:3000},
     ]);
   }
-  //!Função que contabiliza a quantidade de produtos na lista
-  totalProdutos = computed(() => this.produtos().length); 
+  //!Função que contabiliza a quantidade de produtos na lista com metodo computed()
+  totalProdutos = computed(()=> this.produtos().length);
+  //!Função que calcula o valor total dos produtos netodo computed() 
+  valorTotal = computed(() =>
+  {return this.produtos().reduce((total, item) =>
+  total + item.preco,0
+  )}
+  );
 }
