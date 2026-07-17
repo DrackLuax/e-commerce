@@ -3,6 +3,7 @@ import { Produto } from '../produto/produto';
 import { signal } from '@angular/core';
 import { computed } from '@angular/core'
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
+import { effect } from  '@angular/core';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -43,5 +44,18 @@ export class ListaProdutos {
       {nome:'desktop', preco: 1500},
       {nome:'headset', preco: 30},
     ])
+  } constructor(){
+    effect(() => {
+      console.log('Lista de Produtos alterados: ', this.produtos());
+    });
+    effect(() => {
+      console.log('Valor total atualizado: ', this.valorTotal());
+    });
+    effect(() => {
+      if (typeof document !== 'undefined') {
+        document.title = `(${this.totalProdutos()}) - Loja do AbsoluteMalex`
+      }
+    });
   }
+  produtoSelecionado = signal <string | null>(null);
 }
