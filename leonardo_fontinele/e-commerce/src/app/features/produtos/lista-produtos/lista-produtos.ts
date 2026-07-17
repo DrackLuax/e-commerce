@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Produto } from '../produto/produto';
 import { signal } from '@angular/core';
 import { computed } from '@angular/core'
+import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto],
+  imports: [Produto, PrecoFormatadoPipe],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
