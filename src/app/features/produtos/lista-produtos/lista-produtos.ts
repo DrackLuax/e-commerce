@@ -3,7 +3,6 @@ import { Produto } from '../produto/produto';
 import { signal } from '@angular/core';
 import { computed } from '@angular/core'
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
-import { effect } from '@angular/core';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -34,18 +33,15 @@ export class ListaProdutos {
   //!Função que calcula o valor total dos produtos netodo computed() 
   valorTotal = computed(() =>
   {return this.produtos().reduce((total, item) =>
-  total + item.preco,0
-  )});
-  //!função para substituir a lista atual usando o método set()
-  substituiProdutos(){
+  total + item.preco,0)});
+  //função para substituir a lista atual usando metodo set()
+  substituirProdutos(){
     this.produtos.set([
-      {nome:'teclado', preco: 50 },
-      {nome:'mouse', preco: 15 },
-      {nome:'monitor', preco: 500 },
-      {nome:'desktop', preco: 1500 },
-      {nome:'headset', preco: 30 },
+      {nome:'teclado', preco: 50},
+      {nome:'mouse', preco: 15},
+      {nome:'monitor', preco: 500},
+      {nome:'desktop', preco: 1500},
+      {nome:'headset', preco: 30},
     ])
   }
-  
-
 }
