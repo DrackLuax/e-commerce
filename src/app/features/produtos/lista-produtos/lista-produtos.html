@@ -1,46 +1,44 @@
 <h2>
-    Produto Selecionado:
-    @if(produtoSelecionado()){
-        <strong style="color:green">{{produtoSelecionado() | uppercase }}</strong>
-    }@else{
-        <span style="color:gray">Nenhum Produto Selecionado</span>
-    }
-<!-- </h2>
-@for(item of produtos();track item){
+  produto selecionado:
+  @if (produtoSelecionado()) {
+    <strong style="color: green">{{ produtoSelecionado() | uppercase }}</strong>
+  } @else {
+    <span style="color: gray">Nenhum produto Selecionado</span>
+  }
+  <!-- </h2>
+@for(item of produtos(); track item){
     <app-produto
     [nome]="item.nome"
     [preco]="item.preco"
     (produtoSelecionado) ="exibirProduto($event)"
     ></app-produto>
-    <button (click)="adicionarAoCarrinho(item)">Adicionar ao Carrinho</button>
+    <button (click)="adicionarAoCarrinho(item)">Adicionar ao carrinho</button>
 }
 <hr>
-<p><button (click)="adicionarProduto()">Adicionar Produto</button></p>
+<p><button (click)="adicionarProduto()">adicionar Produto</button></p>
 <p><button (click)="substituirProdutos()">Substituir Produto</button></p>
 <hr>
-<h2>total de Produtos: {{totalProdutos()}}</h2>
-<h3>Valor total: {{valorTotal() | precoFormatado}}</h3> -->
-
-<h2>Produtos</h2>
-@if(carregando()){
-    <p> Carregando produtos...</p>
-}
-@if(!carregando()){
-    @for(item of produtos(); track item){
-        <app-produto
-        [nome] ="item.nome"
-        [preco] ="item.preco"
-        >
-        </app-produto>
-        <button (click)="adicionarAoCarrinho(item)">Adicionar ao carrinho</button>
+<h2>total de produtos: {{totalProdutos()}}</h2>
+<h3>Valor total: {{valorTotal()| precoFormatado }}</h3> -->
+  <h2>Produtos</h2>
+  @if (carregando()) {
+    <p>Carregando produtos...</p>
+  }
+  @if (!carregando()) {
+    @for (item of produtos(); track item) {
+      <app-produto [nome]="item.nome" [preco]="item.preco"> </app-produto>
+      <button (click)="adicionarAoCarrinho(item)">adicionar ao Carrinho</button>
     }
-}
-<!--CARRINHO-->
-<hr>
-<h2>Carrinho</h2>
-@for(item of carrinho();track $index){
-    <p>{{ item.nome }} - {{ item.preco | precoFormatado}}</p>
-}
-<hr>
-<p><strong>Quant de itens: </strong>{{ quantidadeCarrinho() }}</p>
-<p><strong>Valor total do carrinho </strong>{{totalCarrinho() |precoFormatado}}</p>
+  }
+
+  <!-- carrinho -->
+
+  <hr />
+  <h2>Carrinho</h2>
+  @for (item of carrinho(); track $index) {
+    <p>{{ item.nome }} - {{ item.preco | precoFormatado }}</p>
+  }
+  <hr />
+  <p><strong>Quantidades de itens:</strong>{{ quantidadeCarrinho() }}</p>
+  <p><strong>Valor total do carrinho </strong>{{ totalCarrinho() | precoFormatado }}</p>
+</h2>

@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Produto } from '../produto/produto';
 import { signal } from '@angular/core';
 import { computed } from '@angular/core';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { effect } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
+import { produtosService } from '../produtos.service';
+import { Inject } from '@angular/core';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -13,62 +15,87 @@ import { UpperCasePipe } from '@angular/common';
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
-  //!lista com dados - Array
-  produtos = signal([
-    { nome: 'Fone Gamer', preco: 345.99 },
-    { nome: 'Teclado Gamer Arceus', preco: 456.99 },
-    { nome: 'RTX 5090', preco: 25999.99 },
-  ]);
-  //!função para exibir produtos selecionados pelo usuário no console
+//!=======================SIGNALS===========================
+  produtos = signal<{ nome: string; preco: number }[]>([]);
+
+  carregando = signal(true);
+
+  produtoSelecionado = signal<string | null>(null);
+
+  carrinho = signal<{ nome: string; preco: number }[]>([]);
+
+//?========================COMPUTED=========================
+
+  totalProdutos = computed(() => this.produtos().length);
+
+  valorTotal = computed(() => {
+    return this.produtos().reduce((total, item) => total + item.preco, 0);
+  });
+
+  //totalProduto = computed(() =>this.produto(). length);
+  quantidadeCarrinho = computed(() => this.carrinho().length);
+
+  totalCarrinho = computed(() => {
+    return this.carrinho().reduce((total, item) => total + item.preco, 0);
+  });
+//**==========================MÉTODO HTTP CRIENT (API)========================================== */
+
+  carregarProduto() {
+    
+    this.carregando.set(true);
+    this.produtosService.buscarProduto().subscribe({
+      next: (dados) => {
+        const produtos = this.produtosService.transformarProdutos(dados);
+        this.produtos.set(produtos);
+        this.carregando.set(false);
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar produtos: ', erro);
+        this.carregando.set(false);
+      },
+    });
+  }
+
+//**=============================CONSTRUCTOR======================== */
+  constructor() {
+    //! carrega a API
+    this.carregarProduto();
+
+    effect(() => {
+      console.log('lista de Produtos alterados: ', this.produtos());
+    });
+    effect(() => {
+      console.log('Valor total atualizado: ', this.valorTotal());
+    });
+    effect(() => {
+      if (typeof document !== 'undefined') {
+        document.title = `(${this.totalProdutos()}) - loja do arthurzinho gamaplayes`;
+      }
+    });
+  }
+//**===================================MÉTODO UPDATE=====================================
+  adicionarProduto() {
+    this.produtos.update((listaAtual) => [...listaAtual, { nome: 'playstation 5', preco: 3000 }]);
+  }
+  adicionarAoCarrinho(produto: { nome: string; preco: number }) {
+    this.carrinho.update((listaAtual) => [...listaAtual, produto]);
+  }
+  //!função para substituir a lista atual usando o metod set()
+  substituirProdutos() {
+    this.produtos.set([
+      { nome: 'teclado', preco: 50 },
+      { nome: 'mouse', preco: 15 },
+      { nome: 'monitor', preco: 500 },
+      { nome: 'desktop', preco: 1500 },
+      { nome: 'headset', preco: 30 },
+    ]);
+  }
+//**=============================métoddo existente (não mexer)=============================== */
   exibirProduto(nome: string) {
     console.log('Produto Selecionado: ', nome);
     this.produtoSelecionado.set(nome);
   }
-  //!funcão que adiciona produtos usando metodo update()
-  adicionarProduto() {
-    this.produtos.update((listaAtual) => [...listaAtual, { nome: 'Playstation 5', preco: 3000 }]);
-  }
-  //!função que contabiliza a quantidade de produtos na lista com o metodo computed()
-  totalProdutos = computed(() => this.produtos().length);
-  //!funcao que calcula o valor total do produtos usando o metodo computed()
-  valorTotal = computed(() => {
-    return this.produtos().reduce((total, item) => total + item.preco, 0);
-  });
-  //!função para substituir a lista atual usando o metodo set()
-  substituirProdutos() {
-    this.produtos.set([
-      { nome: 'Teclado', preco: 50 },
-      { nome: 'Mouse', preco: 15 },
-      { nome: 'Monitor', preco: 500 },
-      { nome: 'Desktop', preco: 1500 },
-      { nome: 'Headset', preco: 30 },
-    ]);
-  }
-  //!metodo para monitorar as alterações em tempo real usando effect()
-  constructor() {
-    effect(() => {
-      console.log('Lista de Produtos Alterados: ', this.produtos());
-    });
-    effect(() => {
-      console.log('Valor Total Atualizado: ', this.valorTotal());
-    });
-    effect(() => {
-      if (typeof document !== 'undefined') {
-        document.title = `(${this.totalProdutos()}) - Sunrise Store`;
-      }
-    });
-  }
-  //!metodo para criar um estado de seleção com signal string / null
-  produtoSelecionado = signal<string | null>(null);
-  //!metodo para criar um estado para carrinho com signal
-  carrinho = signal<{ nome: string; preco: number }[]>([]);
-  adicionarAoCarrinho(produto: { nome: string; preco: number }) {
-    this.carrinho.update((listaAtual) => [...listaAtual, produto]);
-  }
-  //!metodo para calcular a quantidade total de itens no carrinho
-  quantidadeCarrinho = computed(() => this.carrinho().length);
-  //!metodo que calcula o valor total dos itens do carrinho
-  totalCarrinho = computed(() => {
-    return this.carrinho().reduce((total, item) => total + item.preco, 0);
-  });
+//**=====================INJECT ============================== */
+
+  private produtosService = inject(produtosService);
 }
