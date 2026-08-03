@@ -6,7 +6,6 @@ import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { effect } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { produtosService } from '../produtos.service';
-import { Inject } from '@angular/core';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -15,7 +14,7 @@ import { Inject } from '@angular/core';
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
-//!=======================SIGNALS===========================
+  //!=======================SIGNALS===========================
   produtos = signal<{ nome: string; preco: number }[]>([]);
 
   carregando = signal(true);
@@ -24,7 +23,7 @@ export class ListaProdutos {
 
   carrinho = signal<{ nome: string; preco: number }[]>([]);
 
-//?========================COMPUTED=========================
+  //?========================COMPUTED=========================
 
   totalProdutos = computed(() => this.produtos().length);
 
@@ -38,10 +37,9 @@ export class ListaProdutos {
   totalCarrinho = computed(() => {
     return this.carrinho().reduce((total, item) => total + item.preco, 0);
   });
-//**==========================MÉTODO HTTP CRIENT (API)========================================== */
+  //**==========================MÉTODO HTTP CRIENT (API)========================================== */
 
   carregarProduto() {
-    
     this.carregando.set(true);
     this.produtosService.buscarProduto().subscribe({
       next: (dados) => {
@@ -56,7 +54,7 @@ export class ListaProdutos {
     });
   }
 
-//**=============================CONSTRUCTOR======================== */
+  //**=============================CONSTRUCTOR======================== */
   constructor() {
     //! carrega a API
     this.carregarProduto();
@@ -73,7 +71,7 @@ export class ListaProdutos {
       }
     });
   }
-//**===================================MÉTODO UPDATE=====================================
+  //**===================================MÉTODO UPDATE=====================================
   adicionarProduto() {
     this.produtos.update((listaAtual) => [...listaAtual, { nome: 'playstation 5', preco: 3000 }]);
   }
@@ -90,12 +88,12 @@ export class ListaProdutos {
       { nome: 'headset', preco: 30 },
     ]);
   }
-//**=============================métoddo existente (não mexer)=============================== */
+  //**=============================métoddo existente (não mexer)=============================== */
   exibirProduto(nome: string) {
     console.log('Produto Selecionado: ', nome);
     this.produtoSelecionado.set(nome);
   }
-//**=====================INJECT ============================== */
+  //**=====================INJECT ============================== */
 
   private produtosService = inject(produtosService);
 }
