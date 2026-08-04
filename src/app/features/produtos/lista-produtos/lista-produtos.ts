@@ -14,6 +14,7 @@ import { produtosService } from '../produtos.service';
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {
+
   //!=======================SIGNALS===========================
   produtos = signal<{ nome: string; preco: number }[]>([]);
 
@@ -37,6 +38,7 @@ export class ListaProdutos {
   totalCarrinho = computed(() => {
     return this.carrinho().reduce((total, item) => total + item.preco, 0);
   });
+
   //**==========================MÉTODO HTTP CRIENT (API)========================================== */
 
   carregarProduto() {
@@ -71,6 +73,7 @@ export class ListaProdutos {
       }
     });
   }
+
   //**===================================MÉTODO UPDATE=====================================
   adicionarProduto() {
     this.produtos.update((listaAtual) => [...listaAtual, { nome: 'playstation 5', preco: 3000 }]);
@@ -88,11 +91,13 @@ export class ListaProdutos {
       { nome: 'headset', preco: 30 },
     ]);
   }
+
   //**=============================métoddo existente (não mexer)=============================== */
   exibirProduto(nome: string) {
     console.log('Produto Selecionado: ', nome);
     this.produtoSelecionado.set(nome);
   }
+  
   //**=====================INJECT ============================== */
 
   private produtosService = inject(produtosService);
