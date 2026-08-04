@@ -1,5 +1,69 @@
+<!--
+  Container principal do produto.
+
+  A classe CSS "produto" permite aplicar estilos
+  somente nessa área do componente.
+-->
 <div class="produto">
-    <h3>{{nome | uppercase }}</h3>
-    <p>{{preco | precoFormatado}}</p>
-    <button (click)="selecionarProduto()">Selecionar {{nome}}</button>
+  <!--
+      Exibe o nome do produto.
+
+      {{ nome }}
+      -> Interpolação do Angular para mostrar uma variável
+         recebida pelo componente.
+
+      | uppercase
+      -> Pipe nativo do Angular que transforma o texto
+         para letras maiúsculas.
+
+      Exemplo:
+      "mouse gamer"
+
+      Resultado:
+      "MOUSE GAMER"
+    -->
+  <h3>
+    {{ nome | uppercase }}
+  </h3>
+
+  <!--
+      Exibe o preço do produto.
+
+      {{ preco }}
+      -> Valor recebido pelo componente.
+
+      | precoFormatado
+      -> Pipe personalizado da aplicação.
+
+      Ele transforma o número em um formato de moeda.
+
+      Exemplo:
+
+      3000
+
+      Resultado:
+
+      R$ 3.000,00
+    -->
+  <p>
+    {{ preco | precoFormatado }}
+  </p>
+
+  <!--
+      Botão responsável por selecionar o produto.
+
+      (click)
+      -> Evento do Angular.
+
+      Quando o usuário clicar no botão,
+      o método selecionarProduto() será executado.
+
+      {{nome}}
+      -> Mostra o nome do produto no texto do botão.
+
+      Exemplo:
+
+      Selecionar Mouse
+    -->
+  <button (click)="selecionarProduto()">Selecionar {{ nome }}</button>
 </div>

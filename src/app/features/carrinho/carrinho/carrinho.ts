@@ -9,6 +9,4 @@ import { Component } from '@angular/core';
 export class Carrinho {
   //!Lógica de carrinho virá nas próximas aulas
   //!Por ora, apenas exibe a página carrinho
-
-
 }

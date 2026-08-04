@@ -1,13 +1,37 @@
 <!doctype html>
+<!-- Define que o documento utiliza a versão HTML5 -->
+
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>ECommerce</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <!-- Elemento raiz da página.
+     O atributo "lang" informa que o idioma principal é inglês. -->
+
+  <head>
+    <!-- Contém informações sobre a página que não aparecem diretamente ao usuário -->
+
+    <meta charset="utf-8" />
+    <!-- Define a codificação de caracteres como UTF-8,
+       permitindo o uso de acentos e caracteres especiais. -->
+
+    <title>ECommerce</title>
+    <!-- Define o título da página exibido na aba do navegador. -->
+
+    <base href="/" />
+    <!-- Define a URL base para todos os caminhos relativos da aplicação.
+       No Angular, isso é importante para o funcionamento das rotas. -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Faz com que a página seja responsiva,
+       ajustando a largura ao tamanho da tela do dispositivo. -->
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Define o ícone (favicon) exibido na aba do navegador. -->
+  </head>
+
+  <body>
+    <!-- Contém todo o conteúdo visível da página -->
+
+    <app-root></app-root>
+    <!-- Componente principal da aplicação Angular.
+       Todo o conteúdo da aplicação será carregado dentro dessa tag. -->
+  </body>
 </html>
