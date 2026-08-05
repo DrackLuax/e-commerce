@@ -110,4 +110,15 @@ export class Produto {
     // "Mouse"
     this.produtoSelecionado.emit(this.nome);
   }
+  @Output() produtoAdicionado = new EventEmitter<{
+    nome: string;
+    preco: number;
+  }>();
+
+  adicionarAoCarrinho() {
+    this.produtoAdicionado.emit({
+      nome:this.nome,
+      preco:this.preco,
+    });
+}
 }

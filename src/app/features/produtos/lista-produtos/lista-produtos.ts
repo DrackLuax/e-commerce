@@ -250,7 +250,6 @@ export class ListaProdutos {
   // e atualiza o Signal produtoSelecionado.
   exibirProduto(nome: string) {
     console.log('Produto Selecionado: ', nome);
-
     this.produtoSelecionado.set(nome);
   }
 

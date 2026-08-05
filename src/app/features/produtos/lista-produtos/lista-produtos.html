@@ -1,4 +1,3 @@
-// Título principal da página. // Mostra a seção de produtos.
 <h2>Produtos</h2>
 
 <!-- ========================================= -->
@@ -92,13 +91,22 @@
 
       [nome]  recebe o nome do produto.
       [preco] recebe o preço do produto.
+
+      Escuta o evento produtoSelecionado emitido pelo componente filho
+      e envia o produto selecionado para o método exibirProduto().
     -->
-    <app-produto [nome]="item.nome" [preco]="item.preco"> </app-produto>
+    <app-produto
+      [nome]="item.nome"
+      [preco]="item.preco"
+      (produtoSelecionado)="exibirProduto($event)"
+      (produtoAdicionado)="adicionarAoCarrinho($event)"
+    >
+    </app-produto>
+
+    <!-- Linha divisória -->
+    <hr />
   }
 }
-
-<!-- Linha divisória -->
-<hr />
 
 <!-- ========================================= -->
 <!-- CARRINHO DE COMPRAS -->
