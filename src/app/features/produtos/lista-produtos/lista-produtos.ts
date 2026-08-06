@@ -177,8 +177,8 @@ export class ListaProdutos {
         // a quantidade de produtos.
         //
         // Exemplo:
-        // (10) - Loja do Liam
-        document.title = `(${this.totalProdutos()}) - Loja do Liam`;
+        // (10) - Loja do Leo
+        document.title = `(${this.totalProdutos()}) - Loja do Leo`;
       }
     });
   }
