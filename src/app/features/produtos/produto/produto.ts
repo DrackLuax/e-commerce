@@ -17,6 +17,8 @@ import { UpperCasePipe, CurrencyPipe } from '@angular/common';
 // Importa um Pipe personalizado criado na aplicação.
 // Ele é usado para formatar preços.
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   // Nome da tag que representa esse componente no HTML.
@@ -32,7 +34,7 @@ import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 
   // PrecoFormatadoPipe:
   // permite usar | precoFormatado no template.
-  imports: [UpperCasePipe, PrecoFormatadoPipe],
+  imports: [UpperCasePipe, PrecoFormatadoPipe, MatButtonModule, MatCardModule],
 
   // Arquivo HTML ligado ao componente.
   templateUrl: './produto.html',
