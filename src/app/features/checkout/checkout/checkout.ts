@@ -49,6 +49,8 @@ export class Checkout {
     this.compraFinalizada.set(true);
   }
 }
+
+
 function nomeSemNumeros(controle:AbstractControl): ValidationErrors | null {
   const valor = controle.value;
   if(!valor) return null;
