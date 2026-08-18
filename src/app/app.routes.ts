@@ -11,9 +11,11 @@ path: 'produtos',
 loadComponent: () => import('./features/produtos/lista-produtos/lista-produtos').then((m) => m.ListaProdutos),
 },
 {
-path: 'carrinho',
-canActivate: [authGuard],
-loadComponent: () => import('./features/carrinho/carrinho/carrinho').then((m) => m.Carrinho),
+  path: 'carrinho',
+  canActivate: [authGuard],
+  loadComponent: () =>
+    import('./features/carrinho/carrinho/carrinho')
+      .then((m) => m.CarrinhoService),
 },
 {
 path: 'checkout',
