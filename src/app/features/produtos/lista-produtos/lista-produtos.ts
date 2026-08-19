@@ -1,158 +1,137 @@
-import { Component, inject } from '@angular/core';
+import { Component, signal, computed, effect, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+
+import { ProdutosService } from '../../../core/services/produtos.service';
+import { CarrinhoFacade } from '../../../core/facades/carrinho.facade';
 import { Produto } from '../produto/produto';
-import { signal } from '@angular/core';
-import { computed } from '@angular/core';
-import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
-import { effect } from '@angular/core';
-import { produtosService } from '../../../core/services/produtos.service';
-import { CarrinhoService } from '../../../core/services/carrinho.service';
 
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto, PrecoFormatadoPipe],
+  imports: [Produto, MatButtonModule],
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
-
 export class ListaProdutos {
-  //!======================= SIGNALS ===========================
+
+  // === INJECTS ===
+
+  produtosService = inject(ProdutosService);
+  carrinhoFacade = inject(CarrinhoFacade);
+
+  quantidadeCarrinho = this.carrinhoFacade.quantidade;
+  totalCarrinho = this.carrinhoFacade.total;
+
+  // === SIGNALS ===
 
   produtos = signal<{ nome: string; preco: number }[]>([]);
 
-  carregando = signal(true);
-
   produtoSelecionado = signal<string | null>(null);
+
+  carregando = signal(true);
 
   erro = signal<string | null>(null);
 
-  //?======================== COMPUTED =========================
+  // === COMPUTED ===
 
   totalProdutos = computed(() => this.produtos().length);
 
   valorTotal = computed(() => {
-    return this.produtos().reduce((total, item) => total + item.preco, 0);
+    return this.produtos().reduce(
+      (total, item) => total + item.preco,
+      0
+    );
   });
 
-  //**================ MÉTODO HTTP CLIENT (API) =================
-
-  carregarProduto() {
-    
-    this.erro.set(null);
-
-    this.carregando.set(true);
-
-    this.produtosService.buscarProduto().subscribe({
-    
-      next: (dados) => {
-        const produtos = this.produtosService.transformarProdutos(dados);
-
-        
-        this.produtos.set(produtos);
-
-      
-        this.carregando.set(false);
-      },
-
-     
-      error: (erro) => {
-      
-        console.error('Erro ao carregar produtos: ', erro);
-
-        
-        this.erro.set('Erro ao carregar produtos. Por favor, tente novamente!');
-
-        this.carregando.set(false);
-      },
-    });
-  }
-
-  //**============================= CONSTRUCTOR =========================
+  // === CONSTRUTOR ===
 
   constructor() {
- 
-    this.carregarProduto();
 
-  
+    this.carregarProdutos();
+
     effect(() => {
-      console.log('Lista de Produtos alterados: ', this.produtos());
+      console.log(
+        'Lista de produtos alterada:',
+        this.produtos()
+      );
     });
 
-    
     effect(() => {
-      console.log('Valor total atualizado: ', this.valorTotal());
+      console.log(
+        'Valor total atualizado:',
+        this.valorTotal()
+      );
     });
 
-   
     effect(() => {
-
       if (typeof document !== 'undefined') {
-
-        document.title = `(${this.totalProdutos()}) - Loja do Leo`;
+        document.title = `(${this.totalProdutos()}) Minha Loja`;
       }
     });
+
   }
 
-  //**============================= MÉTODO UPDATE ========================
+  // === MÉTODO HTTP (API) ===
 
-  adicionarProduto() {
-    this.produtos.update((listaAtual) => [
-      ...listaAtual,
+  carregarProdutos() {
+  this.erro.set(null);
+  this.carregando.set(true);
 
-      {
-        nome: 'playstation 5',
-        preco: 3000,
-      },
-    ]);
-  }
+  this.produtosService.buscarProduto().subscribe({
+    next: (dados) => {
+      const produtos =
+        this.produtosService.transformarProdutos(dados);
 
-  adicionarAoCarrinho(produto: { nome: string; preco: number }) {
-   this.carrinhoService.adicionar(produto);
-  }
+      this.produtos.set(produtos);
+      this.carregando.set(false);
+    },
 
- //?============================= MÉTODO SET() ========================
+    error: (erro) => {
+      console.error('Erro ao carregar produtos:', erro);
 
-  substituirProdutos() {
-    this.produtos.set([
-      {
-        nome: 'teclado',
-        preco: 50,
-      },
+      this.erro.set(
+        'Erro ao carregar produtos. Verifique sua conexão e tente novamente.'
+      );
 
-      {
-        nome: 'mouse',
-        preco: 15,
-      },
+      this.carregando.set(false);
+    },
+  });
+}
 
-      {
-        nome: 'monitor',
-        preco: 500,
-      },
-
-      {
-        nome: 'desktop',
-        preco: 1500,
-      },
-
-      {
-        nome: 'headset',
-        preco: 30,
-      },
-    ]);
-  }
-
-  //**================ MÉTODO EXISTENTE (NÃO MEXER) =================
+  // === DEMAIS MÉTODOS ===
 
   exibirProduto(nome: string) {
-    console.log('Produto Selecionado: ', nome);
     this.produtoSelecionado.set(nome);
   }
 
-  //**========================= INJECT ===========================
+  adicionarProduto() {
 
-  private produtosService = inject(produtosService);
-  public carrinhoService = inject(CarrinhoService);
+    this.produtos.update((listaAtual) => [
+      ...listaAtual,
+      {
+        nome: 'Teclado',
+        preco: 250
+      }
+    ]);
 
-  quantidadeCarrinho = this.carrinhoService.quantidadeItens;
-  totalCarrinho = this.carrinhoService.totalItens;
+  }
+
+  substituirProdutos() {
+
+    this.produtos.set([
+      {
+        nome: 'Produto novo',
+        preco: 999
+      }
+    ]);
+
+  }
+
+  adicionarAoCarrinho(
+    produto: { nome: string; preco: number }
+  ) {
+
+    this.carrinhoFacade.adicionarProduto(produto);
+
+  }
 
 }
