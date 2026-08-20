@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import {
-ReactiveFormsModule,
-FormGroup,
-FormControl,
-Validators,
 AbstractControl,
+FormControl,
+FormGroup,
+ReactiveFormsModule,
 ValidationErrors,
+Validators,
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CarrinhoFacade } from '../../../core/facades/carrinho.facade';
 function nomeSemNumeros(control: AbstractControl): ValidationErrors | null {
 const valor = control.value;
@@ -18,11 +19,12 @@ return null;
 }
 @Component({
 selector: 'app-checkout',
-imports: [ReactiveFormsModule],
+imports: [ReactiveFormsModule, RouterLink],
 templateUrl: './checkout.html',
 styleUrl: './checkout.css',
 })
 export class Checkout {
+// Checkout usa a facade apenas para ler resumo, validar carrinho vazio e limpar após compra.
 carrinhoFacade = inject(CarrinhoFacade);
 compraFinalizada = signal(false);
 formulario = new FormGroup({
@@ -30,6 +32,7 @@ nome: new FormControl('', [Validators.required, Validators.minLength(3), nomeSem
 email: new FormControl('', [Validators.required, Validators.email]),
 endereco: new FormControl('', [Validators.required, Validators.minLength(5)]),
 });
+
 
 finalizar() {
 this.compraFinalizada.set(false);
@@ -49,6 +52,7 @@ console.log('Compra finalizada com sucesso!');
 console.log('Dados do formulário:', dados);
 console.log('Itens do carrinho:', itens);
 console.log('Total da compra:', total);
+// Após finalizar, o carrinho global é limpo.
 this.carrinhoFacade.limparCarrinho();
 this.formulario.reset();
 this.compraFinalizada.set(true);
