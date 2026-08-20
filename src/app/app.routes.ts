@@ -15,7 +15,7 @@ loadComponent: () => import('./features/produtos/lista-produtos/lista-produtos')
   canActivate: [authGuard],
   loadComponent: () =>
     import('./features/carrinho/carrinho/carrinho')
-      .then((m) => m.CarrinhoService),
+      .then((m) => m.Carrinho),
 },
 {
 path: 'checkout',
