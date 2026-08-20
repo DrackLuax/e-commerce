@@ -1,37 +1,30 @@
-import { Injectable, signal, computed } from '@angular/core';
-
-type ItemCarrinho = {
-  nome: string;
-  preco: number;
-};
-
+import { Injectable, computed, signal } from '@angular/core';
+import { ItemCarrinho } from '../models/item.carrinho';
 @Injectable({
-  providedIn: 'root'
+providedIn: 'root',
 })
 export class CarrinhoService {
-
-  private carrinho = signal<ItemCarrinho[]>([]);
-
-  itens = computed(() => this.carrinho());
-
-  quantidadeItens = computed(() => this.carrinho().length);
-
-  totalItens = computed(() =>
-    this.carrinho().reduce(
-      (total, item) => total + item.preco,
-      0
-    )
-  );
-
-  carrinhoVazio = computed(() =>
-    this.carrinho().length === 0
-  );
-
-  adicionar(produto: ItemCarrinho) {
-    this.carrinho.update(lista => [...lista, produto]);
-  }
-
-  limpar() {
-    this.carrinho.set([]);
-  }
+// O estado interno continua privado.
+// Apenas o service pode alterar diretamente a lista do carrinho.
+private carrinho = signal<ItemCarrinho[]>([]);
+// Selectors públicos derivados do estado interno.
+// Os componentes leem estes valores, mas não alteram diretamente o signal privado.
+itens = computed(() => this.carrinho());        // era totalItens
+quantidadeItens = computed(() => this.carrinho().length);
+total = computed(() => this.carrinho().reduce((total, item) => total + item.preco, 0));
+carrinhoVazio = computed(() => this.carrinho().length === 0);
+// Adiciona um produto ao carrinho global.
+adicionar(produto: ItemCarrinho) {
+this.carrinho.update((listaAtual) => [...listaAtual, produto]);
+}
+// Remove um item específico pelo índice.
+removerPorIndice(indice: number) {
+this.carrinho.update((listaAtual) =>
+listaAtual.filter((_, index) => index !== indice)
+);
+}
+// Limpa todos os itens do carrinho.
+limpar() {
+this.carrinho.set([]);
+}
 }
