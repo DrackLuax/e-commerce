@@ -1,30 +1,65 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
 import { ItemCarrinho } from '../models/item.carrinho';
 @Injectable({
 providedIn: 'root',
 })
 export class CarrinhoService {
-// O estado interno continua privado.
-// Apenas o service pode alterar diretamente a lista do carrinho.
-private carrinho = signal<ItemCarrinho[]>([]);
-// Selectors públicos derivados do estado interno.
-// Os componentes leem estes valores, mas não alteram diretamente o signal privado.
-itens = computed(() => this.carrinho());        // era totalItens
+// PLATFORM_ID permite verificar se o código está rodando no navegador.
+// Isso evita erro com localStorage em ambientes que não possuem browser.
+private platformId = inject(PLATFORM_ID);
+// Chave única usada para salvar e recuperar o carrinho no localStorage.
+private readonly chaveStorage = 'minha-loja-carrinho';
+// O carrinho inicia tentando recuperar os dados salvos no navegador.
+private carrinho = signal<ItemCarrinho[]>(this.carregarCarrinhoSalvo());
+itens = computed(() => this.carrinho());
 quantidadeItens = computed(() => this.carrinho().length);
-total = computed(() => this.carrinho().reduce((total, item) => total + item.preco, 0));
+total = computed(() =>
+this.carrinho().reduce((total, item) => total + item.preco, 0)
+);
 carrinhoVazio = computed(() => this.carrinho().length === 0);
-// Adiciona um produto ao carrinho global.
+constructor() {
+// Sempre que o carrinho mudar, a lista atualizada será persistida.
+effect(() => {
+this.salvarCarrinho(this.carrinho());
+});
+}
 adicionar(produto: ItemCarrinho) {
 this.carrinho.update((listaAtual) => [...listaAtual, produto]);
 }
-// Remove um item específico pelo índice.
+
 removerPorIndice(indice: number) {
 this.carrinho.update((listaAtual) =>
 listaAtual.filter((_, index) => index !== indice)
 );
 }
-// Limpa todos os itens do carrinho.
 limpar() {
 this.carrinho.set([]);
+}
+// Método auxiliar para impedir uso de localStorage fora do navegador.
+private estaNoNavegador(): boolean {
+return isPlatformBrowser(this.platformId);
+}
+// Recupera o carrinho salvo, se existir.
+private carregarCarrinhoSalvo(): ItemCarrinho[] {
+if (!this.estaNoNavegador()) {
+return [];
+}
+const dadosSalvos = localStorage.getItem(this.chaveStorage);
+if (!dadosSalvos) {
+return [];
+}
+try {
+return JSON.parse(dadosSalvos) as ItemCarrinho[];
+} catch {
+return [];
+}
+}
+// Salva o carrinho atualizado no navegador.
+private salvarCarrinho(itens: ItemCarrinho[]) {
+if (!this.estaNoNavegador()) {
+return;
+}
+localStorage.setItem(this.chaveStorage, JSON.stringify(itens));
 }
 }
